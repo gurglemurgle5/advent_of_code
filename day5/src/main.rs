@@ -1,4 +1,4 @@
-use std::{fs, time::Instant};
+use std::{collections::HashMap, fs, time::Instant};
 
 fn main() {
     let now = Instant::now();
@@ -18,36 +18,36 @@ fn main() {
         .map(|line| line.split(',').map(|num| num.parse().unwrap()).collect())
         .collect();
 
+    let mut hashmap: HashMap<u8, Vec<u8>> = HashMap::new();
+
+    for rule in rules {
+        hashmap.entry(rule.1).or_default().push(rule.0);
+    }
+
     dbg!(now.elapsed());
 
     let mut sum_valid = 0;
     let mut sum_invalid = 0;
     for mut update in updates {
         let mut is_valid = true;
-        let mut should_loop = true;
 
-        // This shaves some time but idk if it's the best way of shaving time
-        let rules: Vec<(u8, u8)> = rules
-            .iter()
-            .map(|(a, b)| (*a, *b))
-            .filter(|(a, b)| update.contains(a) && update.contains(b))
-            .collect();
-
-        while should_loop {
-            should_loop = false;
-            for rule in rules.iter() {
-                // Getting the position of values seems to be the slowest, maybe it could be optimized?
-                if let Some(pos0) = update.iter().position(|page| *page == rule.0) {
-                    if let Some(pos1) = update.iter().position(|page| *page == rule.1) {
-                        if pos0 > pos1 {
-                            is_valid = false;
-                            (update[pos0], update[pos1]) = (update[pos1], update[pos0]);
-                            should_loop = true;
-                        }
-                    }
+        for i in 0..(update.len() - 1) {
+            let mut j = i + 1;
+            while j < update.len() {
+                if hashmap
+                    .get(&update[i])
+                    .map(|vec| vec.contains(&update[j]))
+                    .unwrap_or(false)
+                {
+                    is_valid = false;
+                    (update[i], update[j]) = (update[j], update[i]);
+                    j = i + 1;
+                } else {
+                    j += 1;
                 }
             }
         }
+
         if is_valid {
             sum_valid += update[update.len() / 2] as u16;
         } else {
