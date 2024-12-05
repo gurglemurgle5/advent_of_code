@@ -54,6 +54,7 @@ fn check_valid(update: &[i32], rules: &[(i32, i32)]) -> bool {
         if let Some((pos0, pos1)) = indices {
             if pos0 > pos1 {
                 is_valid = false;
+                break;
             }
         }
     }
