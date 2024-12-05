@@ -26,14 +26,19 @@ fn main() {
         let mut is_valid = true;
         let mut should_loop = true;
 
+        // This shaves some time but idk if it's the best way of shaving time
+        let rules: Vec<(u8, u8)> = rules
+            .iter()
+            .map(|(a, b)| (*a, *b))
+            .filter(|(a, b)| update.contains(a) && update.contains(b))
+            .collect();
+
         while should_loop {
             should_loop = false;
             for rule in rules.iter() {
                 // Getting the position of values seems to be the slowest, maybe it could be optimized?
-                let pos0 = update.iter().position(|page| *page == rule.0);
-                if let Some(pos0) = pos0 {
-                    let pos1 = update.iter().position(|page| *page == rule.1);
-                    if let Some(pos1) = pos1 {
+                if let Some(pos0) = update.iter().position(|page| *page == rule.0) {
+                    if let Some(pos1) = update.iter().position(|page| *page == rule.1) {
                         if pos0 > pos1 {
                             is_valid = false;
                             (update[pos0], update[pos1]) = (update[pos1], update[pos0]);
@@ -49,9 +54,9 @@ fn main() {
             sum_invalid += update[update.len() / 2] as u16;
         }
     }
-
     dbg!(now.elapsed());
 
     println!("{sum_valid}");
     println!("{sum_invalid}");
+    dbg!(now.elapsed());
 }
