@@ -10,8 +10,8 @@ fn main() {
 
     rules.lines().for_each(|line| {
         let line = line.as_bytes();
-        let left = (line[0] as u8 & 0b1111) * 10 + (line[1] as u8 & 0b1111);
-        let right = (line[3] as u8 & 0b1111) * 10 + (line[4] as u8 & 0b1111);
+        let left = (line[0] & 0b1111) * 10 + (line[1] & 0b1111);
+        let right = (line[3] & 0b1111) * 10 + (line[4] & 0b1111);
         bitfields[right as usize] |= 1 << left;
     });
     dbg!(now.elapsed());
@@ -23,7 +23,7 @@ fn main() {
             .split(',')
             .map(|num| {
                 let num = num.as_bytes();
-                (num[0] as u8 & 0b1111) * 10 + (num[1] as u8 & 0b1111)
+                (num[0] & 0b1111) * 10 + (num[1] & 0b1111)
             })
             .collect();
         let mut is_valid = true;
@@ -36,6 +36,7 @@ fn main() {
                 is_valid = false;
                 (update[left], update[left + 1]) = (update[left + 1], update[left]);
                 if left != 0 {
+                    // We need to go back to check if the previous order is invalid
                     left -= 1
                 } else {
                     left += 1
