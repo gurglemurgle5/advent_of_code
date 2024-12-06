@@ -1,28 +1,21 @@
-use std::{collections::HashMap, fs, time::Instant};
+use std::{fs, time::Instant};
 
 fn main() {
     let now = Instant::now();
 
+    let mut bitflags = [0u128; 100];
+
     let input = fs::read_to_string("./input.txt").unwrap();
     let (rules, updates) = input.split_once("\n\n").unwrap();
 
-    let rules: Vec<(u8, u8)> = rules
-        .lines()
-        .map(|line| {
-            let rule = line.split_once('|').unwrap();
-            (rule.0.parse().unwrap(), rule.1.parse().unwrap())
-        })
-        .collect();
+    rules.lines().for_each(|line| {
+        let rule = line.split_once('|').unwrap();
+        bitflags[rule.1.parse::<usize>().unwrap()] |= 1 << rule.0.parse::<u128>().unwrap();
+    });
     let updates: Vec<Vec<u8>> = updates
         .lines()
         .map(|line| line.split(',').map(|num| num.parse().unwrap()).collect())
         .collect();
-
-    let mut hashmap: HashMap<u8, Vec<u8>> = HashMap::new();
-
-    for rule in rules {
-        hashmap.entry(rule.1).or_default().push(rule.0);
-    }
 
     dbg!(now.elapsed());
 
@@ -34,11 +27,7 @@ fn main() {
         for i in 0..(update.len() - 1) {
             let mut j = i + 1;
             while j < update.len() {
-                if hashmap
-                    .get(&update[i])
-                    .map(|vec| vec.contains(&update[j]))
-                    .unwrap_or(false)
-                {
+                if bitflags[update[i] as usize] & (1 << update[j]) != 0 {
                     is_valid = false;
                     (update[i], update[j]) = (update[j], update[i]);
                     j = i + 1;
