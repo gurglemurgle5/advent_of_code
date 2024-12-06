@@ -28,16 +28,20 @@ fn main() {
             .collect();
         let mut is_valid = true;
 
-        for i in 0..(update.len() - 1) {
-            let mut j = i + 1;
-            while j < update.len() {
-                if bitfields[update[i] as usize] & (1 << update[j]) == (1 << update[j]) {
-                    is_valid = false;
-                    (update[i], update[j]) = (update[j], update[i]);
-                    j = i + 1;
+        // so it turns out incorrectly ordered pages are always next to each other, allowing for
+        // more optimization
+        let mut left = 0;
+        while left < (update.len() - 1) {
+            if bitfields[update[left] as usize] >> (update[left + 1]) & 1 == 1 {
+                is_valid = false;
+                (update[left], update[left + 1]) = (update[left + 1], update[left]);
+                if left != 0 {
+                    left -= 1
                 } else {
-                    j += 1;
+                    left += 1
                 }
+            } else {
+                left += 1;
             }
         }
 
@@ -52,5 +56,6 @@ fn main() {
 
     println!("{sum_valid}");
     println!("{sum_invalid}");
+
     dbg!(now.elapsed());
 }
