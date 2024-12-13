@@ -18,10 +18,11 @@ fn main() {
 
     loop {
         println!(
-            "blinked {i} times, there are {} stones",
+            "blinked {i} times, there are {} stones\nhashmap size: {}",
             stones
                 .iter()
-                .fold(0u32.into(), |total: BigUint, (num, count)| total + count)
+                .fold(0u32.into(), |total: BigUint, (num, count)| total + count),
+            stones.len()
         );
         let mut new = HashMap::new();
         for (num, count) in stones {
