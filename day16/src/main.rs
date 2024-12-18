@@ -1,6 +1,6 @@
 use std::{
     collections::{HashMap, HashSet},
-    fs,
+    fs, usize,
 };
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -63,16 +63,33 @@ fn main() {
     dbg!(result);
 }
 
-fn reconstruct_path(came_from: HashMap<Node, Node>, mut current: Node) -> usize {
+fn reconstruct_path(came_from: HashMap<Node, HashSet<Node>>, current: Node) -> usize {
     // let mut total_path = Vec::new();
-    let mut score = 0;
-    while let Some(other) = came_from.get(&current) {
-        score += d(current, *other);
-        current = *other;
-        // total_path.push(current);
-    }
+    // let mut score = 0;
+    // while let Some(other) = came_from.get(&current) {
+    //     // score += d(current, *other);
+    //     current = *other;
+    //     // total_path.push(current);
+    // }
     // total_path.reverse();
-    score
+    // score
+    get_reached_spots(&came_from, current).len()
+}
+
+fn get_reached_spots(
+    came_from: &HashMap<Node, HashSet<Node>>,
+    current: Node,
+) -> HashSet<(usize, usize)> {
+    let mut set = HashSet::new();
+    set.insert((current.row, current.col));
+    if let Some(nodes) = came_from.get(&current) {
+        for other in nodes {
+            set.extend(get_reached_spots(came_from, *other));
+        }
+        set
+    } else {
+        set
+    }
 }
 
 fn a_star<T: FnMut(Node) -> usize>(
@@ -83,7 +100,7 @@ fn a_star<T: FnMut(Node) -> usize>(
 ) -> usize {
     let mut open_set: HashSet<Node> = HashSet::new();
     open_set.insert(start);
-    let mut came_from: HashMap<Node, Node> = HashMap::new();
+    let mut came_from: HashMap<Node, HashSet<Node>> = HashMap::new();
     let mut g_score: HashMap<Node, usize> = HashMap::new();
     g_score.insert(start, 0);
     let mut f_score: HashMap<Node, usize> = HashMap::new();
@@ -95,21 +112,26 @@ fn a_star<T: FnMut(Node) -> usize>(
             .min_by_key(|node| f_score.get(node).unwrap_or(&usize::MAX))
             .unwrap();
         // We don't use direct equality, as we don't care about direction once we reach goal.
-        if current.row == goal.row && current.col == goal.col {
-            return reconstruct_path(came_from, current);
-        }
+        // if current.row == goal.row && current.col == goal.col {
+        //     return reconstruct_path(came_from, current);
+        // }
         open_set.remove(&current);
         for neighbor in generate_neighbors(&map, current) {
             let tentative_g_score = g_score.get(&current).unwrap() + d(current, neighbor);
             if tentative_g_score < *g_score.get(&neighbor).unwrap_or(&usize::MAX) {
-                came_from.insert(neighbor, current);
+                let mut set = HashSet::new();
+                set.insert(current);
+                came_from.insert(neighbor, set);
                 g_score.insert(neighbor, tentative_g_score);
                 f_score.insert(neighbor, tentative_g_score + h(neighbor));
                 open_set.insert(neighbor);
+            } else if tentative_g_score == *g_score.get(&neighbor).unwrap_or(&usize::MAX) {
+                came_from.entry(neighbor).or_default().insert(current);
             }
         }
     }
-    panic!("failed to reach goal!");
+    // panic!("failed to reach goal!");
+    reconstruct_path(came_from, goal)
 }
 
 /// PRECONDITION: current and neighbor are direct neighbors
