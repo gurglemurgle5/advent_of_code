@@ -1,4 +1,3 @@
-use core::num;
 use std::{
     collections::{HashMap, HashSet},
     fs,
@@ -9,11 +8,17 @@ fn main() {
     let mut map: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
     let (mut start_row, mut start_col) = (0, 0);
     let (mut end_row, mut end_col) = (0, 0);
-    for (row, line) in map.iter().enumerate() {
-        for (col, char) in line.iter().enumerate() {
+    for (row, line) in map.iter_mut().enumerate() {
+        for (col, char) in line.iter_mut().enumerate() {
             match *char {
-                'S' => (start_row, start_col) = (row, col),
-                'E' => (end_row, end_col) = (row, col),
+                'S' => {
+                    (start_row, start_col) = (row, col);
+                    *char = '.';
+                }
+                'E' => {
+                    (end_row, end_col) = (row, col);
+                    *char = '.';
+                }
                 _ => (),
             }
         }
@@ -25,43 +30,38 @@ fn main() {
         |(row, col)| {
             0 // lazy
         },
-    )
-    .len();
-    dbg!(baseline);
+    );
+
+    // dbg!(&baseline);
 
     let mut num_time_saving_cheats = 0;
 
     for row in 0..map.len() {
         println!("doing row {row}");
         for col in 0..map[row].len() {
-            if map[row][col] != '#' {
+            if map[row][col] != '.' {
                 continue;
             }
-            // for every position, there are two potential cheats: right, and down
-            // oh goodness i sure hope they don't allow cheating for longer time periods
-            // lemee guess that's part 2
-            match map[row][col] {
-                '.' | 'S' | 'E' => map[row][col] = 'T',
-                '#' => map[row][col] = 'W',
-                _ => panic!(),
-            }
-            let test_score = a_star(
-                &map,
-                (start_row, start_col),
-                (end_row, end_col),
-                |(row, col)| {
-                    0 // lazy
-                },
-            )
-            .len();
-            if test_score + 100 <= baseline {
-                num_time_saving_cheats += 1;
-            }
+            let first = (row, col);
+            for row in 0..map.len() {
+                for col in 0..map[row].len() {
+                    let second = (row, col);
+                    if map[row][col] != '.' || first == second {
+                        continue;
+                    }
+                    let distance = (first.0 as isize - second.0 as isize).unsigned_abs()
+                        + (first.1 as isize - second.1 as isize).unsigned_abs();
+                    if distance > 20 {
+                        continue;
+                    }
 
-            match map[row][col] {
-                'T' => map[row][col] = '.',
-                'W' => map[row][col] = '#',
-                _ => panic!(),
+                    let time_saved = baseline.iter().position(|&e| e == first).unwrap() as isize
+                        - baseline.iter().position(|&e| e == second).unwrap() as isize
+                        - distance as isize;
+                    if time_saved >= 100 {
+                        num_time_saving_cheats += 1;
+                    }
+                }
             }
         }
     }
@@ -72,6 +72,7 @@ type Node = (usize, usize);
 
 fn reconstruct_path(came_from: HashMap<Node, Node>, mut current: Node) -> Vec<Node> {
     let mut total_path = Vec::new();
+    total_path.push(current);
     // let mut score = 0;
     while let Some(other) = came_from.get(&current) {
         // score += d(current, *other);
