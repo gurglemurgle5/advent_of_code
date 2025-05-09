@@ -12,111 +12,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "aoc_utils"
+version = "0.1.0"
+
+[[package]]
 name = "autocfg"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ace50bade8e6234aa140d9a2f552bbee1db4d353f69b8217bc503490fc1a9f26"
-
-[[package]]
-name = "day1"
-version = "0.1.0"
-
-[[package]]
-name = "day10"
-version = "0.1.0"
-
-[[package]]
-name = "day11"
-version = "0.1.0"
-dependencies = [
- "num-bigint",
-]
-
-[[package]]
-name = "day12"
-version = "0.1.0"
-
-[[package]]
-name = "day13"
-version = "0.1.0"
-dependencies = [
- "regex",
-]
-
-[[package]]
-name = "day14"
-version = "0.1.0"
-
-[[package]]
-name = "day15"
-version = "0.1.0"
-
-[[package]]
-name = "day16"
-version = "0.1.0"
-
-[[package]]
-name = "day17"
-version = "0.1.0"
-
-[[package]]
-name = "day18"
-version = "0.1.0"
-
-[[package]]
-name = "day19"
-version = "0.1.0"
-
-[[package]]
-name = "day2"
-version = "0.1.0"
-
-[[package]]
-name = "day20"
-version = "0.1.0"
-
-[[package]]
-name = "day22"
-version = "0.1.0"
-
-[[package]]
-name = "day24"
-version = "0.1.0"
-
-[[package]]
-name = "day25"
-version = "0.1.0"
-
-[[package]]
-name = "day3"
-version = "0.1.0"
-dependencies = [
- "regex",
-]
-
-[[package]]
-name = "day4"
-version = "0.1.0"
-
-[[package]]
-name = "day5"
-version = "0.1.0"
-
-[[package]]
-name = "day6"
-version = "0.1.0"
-
-[[package]]
-name = "day7"
-version = "0.1.0"
-
-[[package]]
-name = "day8"
-version = "0.1.0"
-
-[[package]]
-name = "day9"
-version = "0.1.0"
 
 [[package]]
 name = "memchr"
@@ -183,4 +86,112 @@ checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 
 [[package]]
 name = "y19d1"
+version = "0.1.0"
+
+[[package]]
+name = "y19d2"
+version = "0.1.0"
+dependencies = [
+ "aoc_utils",
+]
+
+[[package]]
+name = "y24d1"
+version = "0.1.0"
+
+[[package]]
+name = "y24d10"
+version = "0.1.0"
+
+[[package]]
+name = "y24d11"
+version = "0.1.0"
+dependencies = [
+ "num-bigint",
+]
+
+[[package]]
+name = "y24d12"
+version = "0.1.0"
+
+[[package]]
+name = "y24d13"
+version = "0.1.0"
+dependencies = [
+ "regex",
+]
+
+[[package]]
+name = "y24d14"
+version = "0.1.0"
+
+[[package]]
+name = "y24d15"
+version = "0.1.0"
+
+[[package]]
+name = "y24d16"
+version = "0.1.0"
+
+[[package]]
+name = "y24d17"
+version = "0.1.0"
+
+[[package]]
+name = "y24d18"
+version = "0.1.0"
+
+[[package]]
+name = "y24d19"
+version = "0.1.0"
+
+[[package]]
+name = "y24d2"
+version = "0.1.0"
+
+[[package]]
+name = "y24d20"
+version = "0.1.0"
+
+[[package]]
+name = "y24d22"
+version = "0.1.0"
+
+[[package]]
+name = "y24d24"
+version = "0.1.0"
+
+[[package]]
+name = "y24d25"
+version = "0.1.0"
+
+[[package]]
+name = "y24d3"
+version = "0.1.0"
+dependencies = [
+ "regex",
+]
+
+[[package]]
+name = "y24d4"
+version = "0.1.0"
+
+[[package]]
+name = "y24d5"
+version = "0.1.0"
+
+[[package]]
+name = "y24d6"
+version = "0.1.0"
+
+[[package]]
+name = "y24d7"
+version = "0.1.0"
+
+[[package]]
+name = "y24d8"
+version = "0.1.0"
+
+[[package]]
+name = "y24d9"
 version = "0.1.0"
