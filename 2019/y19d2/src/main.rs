@@ -3,12 +3,19 @@ use std::fs;
 
 fn main() {
     let input = fs::read_to_string("./input.txt").unwrap();
-    let mut input: Vec<i64> = input.split(',').map(|num| num.parse().unwrap()).collect();
-    input[1] = 12;
-    input[2] = 2;
-    let mut intcode = Intcode::new(input);
+    let input: Vec<i64> = input.split(',').map(|num| num.parse().unwrap()).collect();
 
-    intcode.step_until_done();
+    for noun in 0..=99 {
+        for verb in 0..=99 {
+            let mut input = input.clone();
+            input[1] = noun;
+            input[2] = verb;
+            let mut intcode = Intcode::new(input);
 
-    dbg!(intcode.memory()[0]);
+            intcode.step_until_done();
+            if intcode.memory()[0] == 19690720 {
+                dbg!(format!("{noun}{verb}"));
+            }
+        }
+    }
 }
