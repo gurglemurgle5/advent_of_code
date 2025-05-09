@@ -1,4 +1,4 @@
 [workspace]
 resolver = "2"
 
-members = ["2024/day*"]
+members = ["2019/*", "2024/*"]
