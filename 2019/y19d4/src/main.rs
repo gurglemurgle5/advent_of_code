@@ -15,7 +15,10 @@ fn main() {
             if chars[i + 1] < chars[i] {
                 continue 'passes;
             }
-            if chars[i] == chars[i + 1] {
+            if chars[i] == chars[i + 1]
+                && !(i < chars.len() - 2 && chars[i] == chars[i + 2])
+                && !(i > 0 && chars[i] == chars[i - 1])
+            {
                 adjacent = true;
             }
         }
