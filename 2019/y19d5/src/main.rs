@@ -6,7 +6,7 @@ fn main() {
 
     intcode.step_until_done();
     dbg!(intcode.state());
-    intcode.input(1);
+    intcode.input(5);
     while intcode.step_until_done() != IntcodeState::Halted {
         println!("{}", intcode.output());
     }
