@@ -66,10 +66,14 @@ fn main() {
         }
     }
 
-    let mut closest: (i32, i32) = (0, 0);
+    let mut closest = 0;
 
+    let mut steps0 = 0;
     for &segment0 in &segments0 {
+        steps0 += (segment0.0.0 - segment0.1.0).abs() + (segment0.0.1 - segment0.1.1).abs();
+        let mut steps1 = 0;
         for &segment1 in &segments1 {
+            steps1 += (segment1.0.0 - segment1.1.0).abs() + (segment1.0.1 - segment1.1.1).abs();
             if segment0.0.0 == segment0.1.0 {
                 // segment0 is vertical
                 if segment1.0.0 == segment1.1.0 {
@@ -79,14 +83,21 @@ fn main() {
                 // segment1 is horizontal
                 let x = segment0.0.0;
                 let y = segment1.0.1;
+                let steps = steps0
+                    - ((segment0.0.0 - segment0.1.0).abs() + (segment0.0.1 - segment0.1.1).abs())
+                    + steps1
+                    - ((segment1.0.0 - segment1.1.0).abs() + (segment1.0.1 - segment1.1.1).abs())
+                    + (segment0.0.0 - x).abs()
+                    + (segment0.0.1 - y).abs()
+                    + (segment1.0.0 - x).abs()
+                    + (segment1.0.1 - y).abs();
                 if x >= segment1.0.0.min(segment1.1.0)
                     && x <= segment1.0.0.max(segment1.1.0)
                     && y >= segment0.0.1.min(segment0.1.1)
                     && y <= segment0.0.1.max(segment0.1.1)
-                    && (closest == (0, 0)
-                        || (x.abs() + y.abs()) < (closest.0.abs() + closest.1.abs()))
+                    && (closest == 0 || steps < closest)
                 {
-                    closest = (x, y);
+                    closest = steps;
                 }
             } else {
                 // segment0 is horizontal
@@ -94,20 +105,28 @@ fn main() {
                     // segment1 is vertical
                     let x = segment1.0.0;
                     let y = segment0.0.1;
-
+                    let steps = steps0
+                        - ((segment0.0.0 - segment0.1.0).abs()
+                            + (segment0.0.1 - segment0.1.1).abs())
+                        + steps1
+                        - ((segment1.0.0 - segment1.1.0).abs()
+                            + (segment1.0.1 - segment1.1.1).abs())
+                        + (segment0.0.0 - x).abs()
+                        + (segment0.0.1 - y).abs()
+                        + (segment1.0.0 - x).abs()
+                        + (segment1.0.1 - y).abs();
                     if x >= segment0.0.0.min(segment0.1.0)
                         && x <= segment0.0.0.max(segment0.1.0)
                         && y >= segment1.0.1.min(segment1.1.1)
                         && y <= segment1.0.1.max(segment1.1.1)
-                        && (closest == (0, 0)
-                            || (x.abs() + y.abs()) < (closest.0.abs() + closest.1.abs()))
+                        && (closest == 0 || steps < closest)
                     {
-                        closest = (x, y);
+                        closest = steps;
                     }
                 }
             }
         }
     }
 
-    dbg!(closest, closest.0.abs() + closest.1.abs());
+    dbg!(closest);
 }
