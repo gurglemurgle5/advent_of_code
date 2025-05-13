@@ -12,19 +12,27 @@ fn main() {
         layers.push(&input[0..(WIDTH * HEIGHT)]);
         input = &input[(WIDTH * HEIGHT)..];
     }
-    let mut layer_least_zeros = layers[0];
-    let mut least_zeros = usize::MAX;
+    layers.reverse();
 
-    for &layer in &layers {
-        let zeros = layer.iter().filter(|&&num| num == '0').count();
-        if zeros < least_zeros {
-            least_zeros = zeros;
-            layer_least_zeros = layer;
+    let mut image = ['0'; WIDTH * HEIGHT];
+
+    for layer in layers {
+        for (i, &char) in layer.iter().enumerate() {
+            if char != '2' {
+                image[i] = char;
+            }
         }
     }
 
-    let ones = layer_least_zeros.iter().filter(|&&num| num == '1').count();
-    let twos = layer_least_zeros.iter().filter(|&&num| num == '2').count();
-
-    dbg!(ones * twos);
+    for (i, char) in image.into_iter().enumerate() {
+        if i % WIDTH == 0 && i != 0 {
+            println!();
+        }
+        if char == '1' {
+            print!("█");
+        } else {
+            print!(" ");
+        }
+    }
+    println!();
 }
