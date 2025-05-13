@@ -126,6 +126,13 @@ name = "y19d8"
 version = "0.1.0"
 
 [[package]]
+name = "y19d9"
+version = "0.1.0"
+dependencies = [
+ "aoc_utils",
+]
+
+[[package]]
 name = "y24d1"
 version = "0.1.0"
 

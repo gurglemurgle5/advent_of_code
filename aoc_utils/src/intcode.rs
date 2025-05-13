@@ -4,6 +4,7 @@ pub struct Intcode {
     state: IntcodeState,
     position: usize,
     io_addr: usize,
+    relative_base: i64,
 }
 
 impl Intcode {
@@ -14,6 +15,7 @@ impl Intcode {
             state: IntcodeState::Running,
             position: 0,
             io_addr: 0,
+            relative_base: 0,
         }
     }
 
@@ -104,6 +106,11 @@ impl Intcode {
                     self.memory[write_addr] = 0;
                 }
             }
+            9 => {
+                // relative base offset
+                let offset_addr: usize = self.read(&mut modes).try_into().unwrap();
+                self.relative_base += self.memory[offset_addr];
+            }
             99 => self.state = IntcodeState::Halted,
             _ => panic!("Unknown opcode: {opcode}"),
         }
@@ -137,11 +144,18 @@ impl Intcode {
         let val = match *modes % 10 {
             0 => self.memory[self.position],
             1 => self.position.try_into().unwrap(),
+            2 => self.memory[self.position] + self.relative_base,
             _ => panic!("unknown mode: {}", *modes % 10),
         };
         *modes /= 10;
 
         self.position += 1;
+        if self.position >= self.memory.len() {
+            self.memory.resize(self.position + 1, 0);
+        }
+        if usize::try_from(val).unwrap() >= self.memory.len() {
+            self.memory.resize(usize::try_from(val).unwrap() + 1, 0);
+        }
         val
     }
 
