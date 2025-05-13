@@ -4,7 +4,7 @@ fn main() {
     let input = Intcode::read_to_vec("./input.txt");
     let mut intcode = Intcode::new(input);
     intcode.step_until_done();
-    intcode.input(1);
+    intcode.input(2);
     intcode.step_until_done();
     while intcode.state() != IntcodeState::Halted {
         dbg!(intcode.output());
