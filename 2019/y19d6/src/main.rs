@@ -8,15 +8,25 @@ fn main() {
         .map(|(a, b)| (b, a))
         .collect();
 
-    let mut total = 0;
+    let mut you = Vec::new();
+    let mut san = Vec::new();
 
-    for &orbit in orbits.keys() {
-        let mut current = orbit;
-        while current != "COM" {
-            total += 1;
-            current = orbits.get(current).unwrap();
-        }
+    let mut current = "YOU";
+    while current != "COM" {
+        current = orbits.get(current).unwrap();
+        you.push(current);
     }
 
-    dbg!(total);
+    current = "SAN";
+    while current != "COM" {
+        current = orbits.get(current).unwrap();
+        san.push(current);
+    }
+
+    while you.last().unwrap() == san.last().unwrap() {
+        you.pop();
+        san.pop();
+    }
+
+    dbg!(you.len() + san.len());
 }
