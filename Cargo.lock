@@ -102,6 +102,9 @@ dependencies = [
 [[package]]
 name = "y19d12"
 version = "0.1.0"
+dependencies = [
+ "aoc_utils",
+]
 
 [[package]]
 name = "y19d2"

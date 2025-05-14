@@ -1,4 +1,5 @@
-use std::fs;
+use aoc_utils::lcm_i64;
+use std::{cmp::Ordering, fs};
 
 fn main() {
     let input = fs::read_to_string("./input.txt").unwrap();
@@ -7,7 +8,7 @@ fn main() {
         .lines()
         .map(|line| &line[1..(line.len() - 1)])
         .map(|line| {
-            let vec: Vec<i32> = line
+            let vec: Vec<i64> = line
                 .split(", ")
                 .map(|part| part[2..].parse().unwrap())
                 .collect();
@@ -15,7 +16,12 @@ fn main() {
         })
         .collect();
 
-    for i in 0..1000 {
+    let initial = moons.clone();
+    let mut x = None;
+    let mut y = None;
+    let mut z = None;
+    let mut i: i64 = 0;
+    loop {
         for left in 0..moons.len() {
             for right in 0..moons.len() {
                 if left == right {
@@ -28,19 +34,65 @@ fn main() {
         for moon in &mut moons {
             moon.tick();
         }
+
+        i += 1;
+
+        if x.is_none() {
+            let mut is_x = true;
+            for (i, moon) in moons.iter().enumerate() {
+                if moon.vel[0] != 0 || moon.pos[0] != initial[i].pos[0] {
+                    is_x = false;
+                }
+            }
+            if is_x {
+                x = Some(i);
+            }
+        }
+        if y.is_none() {
+            let mut is_y = true;
+            for (i, moon) in moons.iter().enumerate() {
+                if moon.vel[1] != 0 || moon.pos[1] != initial[i].pos[1] {
+                    is_y = false;
+                    break;
+                }
+            }
+            if is_y {
+                y = Some(i);
+            }
+        }
+        if z.is_none() {
+            let mut is_z = true;
+            for (i, moon) in moons.iter().enumerate() {
+                if moon.vel[2] != 0 || moon.pos[2] != initial[i].pos[2] {
+                    is_z = false;
+                    break;
+                }
+            }
+            if is_z {
+                z = Some(i);
+            }
+        }
+
+        if i % 10_000_000 == 0 {
+            dbg!(i);
+        }
+        if x.is_some() && y.is_some() && z.is_some() {
+            break;
+        }
     }
 
-    dbg!(moons.iter().map(|moon| moon.energy()).sum::<i32>());
+    dbg!(x, y, z);
+    dbg!(lcm_i64(x.unwrap(), lcm_i64(y.unwrap(), z.unwrap())));
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct Moon {
-    pos: [i32; 3],
-    vel: [i32; 3],
+    pos: [i64; 3],
+    vel: [i64; 3],
 }
 
 impl Moon {
-    fn new(pos: [i32; 3]) -> Moon {
+    fn new(pos: [i64; 3]) -> Moon {
         Moon { pos, vel: [0; 3] }
     }
 
@@ -51,10 +103,10 @@ impl Moon {
             .zip(self.vel.iter_mut())
             .zip(other.pos.iter())
         {
-            if *pos > *other {
-                *vel -= 1;
-            } else if *pos < *other {
-                *vel += 1;
+            match pos.cmp(other) {
+                Ordering::Greater => *vel -= 1,
+                Ordering::Less => *vel += 1,
+                Ordering::Equal => (),
             }
         }
     }
@@ -63,10 +115,5 @@ impl Moon {
         for (pos, vel) in self.pos.iter_mut().zip(self.vel.iter()) {
             *pos += *vel;
         }
-    }
-
-    fn energy(&self) -> i32 {
-        self.pos.iter().map(|&pos| pos.abs()).sum::<i32>()
-            * self.vel.iter().map(|&vel| vel.abs()).sum::<i32>()
     }
 }
