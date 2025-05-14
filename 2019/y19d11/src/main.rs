@@ -9,6 +9,7 @@ fn main() {
 
     let mut pos = (0, 0);
     let mut tiles: HashMap<(i64, i64), bool> = HashMap::new();
+    tiles.insert((0, 0), true);
     let mut dir = (0, 1);
 
     while intcode.state() != IntcodeState::Halted {
@@ -41,5 +42,38 @@ fn main() {
         pos.1 += dir.1;
     }
 
-    dbg!(tiles.len());
+    let mut furthest_left = 0;
+    let mut furthest_up = 0;
+    let mut furthest_right = 0;
+    let mut furthest_down = 0;
+
+    for (&(x, y), &color) in &tiles {
+        if color {
+            if x < furthest_left {
+                furthest_left = x;
+            }
+            if x > furthest_right {
+                furthest_right = x;
+            }
+            if y < furthest_down {
+                furthest_down = y;
+            }
+            if y > furthest_up {
+                furthest_up = y;
+            }
+        }
+    }
+
+    dbg!(furthest_up, furthest_down, furthest_left, furthest_right);
+
+    for y in (furthest_down..=furthest_up).rev() {
+        for x in furthest_left..=furthest_right {
+            if *tiles.get(&(x, y)).unwrap_or(&false) {
+                print!("#");
+            } else {
+                print!(" ");
+            }
+        }
+        println!();
+    }
 }
