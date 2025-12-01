@@ -1,4 +1,18 @@
 [workspace]
-resolver = "2"
-
 members = ["2019/*", "2024/*", "aoc_utils"]
+
+[package]
+name = "advent_of_code"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+aoc_utils = { path = "aoc_utils" }
+# Used for command line arguments
+clap = { version = "4.5.53", features = ["derive"] }
+
+[build-dependencies]
+# for some reason quote doesn't re-export stuff from this crate, which means i have to add it as a dependency
+proc-macro2 = "1.0.103"
+# used for codegen because i don't wanna deal with using strings
+quote = "1.0.42"
