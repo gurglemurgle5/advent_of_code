@@ -2,7 +2,7 @@ use std::ops::RangeInclusive;
 
 use aoc_utils::Day;
 
-const FACTORS: &[&[u64]] = &[
+const FACTORS: &[&[u32]] = &[
     &[],        // 0
     &[],        // 1
     &[1],       // 2
@@ -14,6 +14,19 @@ const FACTORS: &[&[u64]] = &[
     &[1, 2, 4], // 8
     &[1, 3],    // 9
     &[1, 2, 5], // 10
+];
+
+const POWS: &[u64] = &[
+    1,
+    10,
+    100,
+    1_000,
+    10_000,
+    100_000,
+    1_000_000,
+    10_000_000,
+    100_000_000,
+    1_000_000_000,
 ];
 
 pub struct Day2(Box<[RangeInclusive<u64>]>);
@@ -42,8 +55,8 @@ impl Day for Day2 {
         for range in &self.0 {
             for num in range.clone() {
                 let len = num.ilog10() + 1;
-                let multiple = 10u64.pow(len / 2);
                 if len.is_multiple_of(2) {
+                    let multiple = POWS[(len / 2) as usize];
                     let test = num % multiple;
                     let other = (num / multiple) % multiple;
 
@@ -62,14 +75,14 @@ impl Day for Day2 {
         let mut invalid = 0;
         for range in &self.0 {
             for num in range.clone() {
-                let len: u64 = num.ilog10() as u64 + 1;
+                let len = num.ilog10() + 1;
 
                 'multiples: for &multiple in FACTORS[len as usize] {
-                    let chunk = 10u64.pow(multiple as u32);
+                    let chunk = POWS[multiple as usize];
                     let test = num % chunk;
 
                     for i in 1..(len / multiple) {
-                        let other = (num / chunk.pow(i as u32)) % chunk;
+                        let other = (num / POWS[multiple as usize * i as usize]) % chunk;
                         if other != test {
                             continue 'multiples;
                         }
