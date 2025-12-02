@@ -2,36 +2,42 @@ use std::ops::RangeInclusive;
 
 use aoc_utils::Day;
 
-pub struct Day2(String);
+pub struct Day2(Box<[RangeInclusive<u64>]>);
 
 impl Day for Day2 {
     fn init(input: &str) -> Box<dyn Day>
     where
         Self: Sized,
     {
-        Box::new(Self(input.into()))
+        Box::new(Self(
+            input
+                .trim()
+                .split(',')
+                .map(|range| {
+                    let (left, right) = range.split_once('-').unwrap();
+                    let left = left.parse().unwrap();
+                    let right = right.parse().unwrap();
+                    left..=right
+                })
+                .collect(),
+        ))
     }
 
     fn part1(&self) -> String {
-        let ranges: Box<[RangeInclusive<u64>]> = self
-            .0
-            .trim()
-            .split(',')
-            .map(|range| {
-                let (left, right) = range.split_once('-').unwrap();
-                let left = left.parse().unwrap();
-                let right = right.parse().unwrap();
-                left..=right
-            })
-            .collect();
+        let mut invalid = 0;
+        for range in &self.0 {
+            for num in range.clone() {
+                let len = num.ilog10() + 1;
+                let multiple = len / 2;
+                if len.is_multiple_of(2) {
+                    let test = num % 10u64.pow(multiple);
+                    let other = (num / 10u64.pow(multiple)) % 10u64.pow(multiple);
 
-        let mut invalid: u64 = 0;
-        for range in ranges {
-            for num in range {
-                let num = num.to_string();
-                let len = num.len();
-                if len.is_multiple_of(2) && num[0..(len / 2)] == num[(len / 2)..len] {
-                    invalid += num.parse::<u64>().unwrap();
+                    if other != test {
+                        continue;
+                    }
+
+                    invalid += num;
                 }
             }
         }
@@ -39,37 +45,23 @@ impl Day for Day2 {
     }
 
     fn part2(&self) -> String {
-        let ranges: Box<[RangeInclusive<u64>]> = self
-            .0
-            .trim()
-            .split(',')
-            .map(|range| {
-                let (left, right) = range.split_once('-').unwrap();
-                let left = left.parse().unwrap();
-                let right = right.parse().unwrap();
-                left..=right
-            })
-            .collect();
+        let mut invalid = 0;
+        for range in &self.0 {
+            for num in range.clone() {
+                let len = num.ilog10() + 1;
 
-        let mut invalid: u64 = 0;
-        for range in ranges {
-            for num in range {
-                let num = num.to_string();
-                let len = num.len();
-
-                let mut is_invalid = None;
-                for multiple in 1..len {
+                'multiples: for multiple in 1..=(len / 2) {
                     if len.is_multiple_of(multiple) {
-                        is_invalid = Some(true);
-                        let test = &num[0..multiple];
+                        let test = num % 10u64.pow(multiple);
+
                         for i in 1..(len / multiple) {
-                            if &num[(i * multiple)..(multiple + (i * multiple))] != test {
-                                is_invalid = Some(false);
+                            let other = (num / 10u64.pow(multiple * i)) % (10u64).pow(multiple);
+                            if other != test {
+                                continue 'multiples;
                             }
                         }
-                    }
-                    if is_invalid.is_some_and(|bool| bool) {
-                        invalid += num.parse::<u64>().unwrap();
+
+                        invalid += num;
                         break;
                     }
                 }
