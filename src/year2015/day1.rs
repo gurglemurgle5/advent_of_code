@@ -3,11 +3,11 @@ use aoc_utils::Day;
 pub struct Day1(String);
 
 impl Day for Day1 {
-    fn init(input: String) -> Box<dyn Day>
+    fn init(input: &str) -> Box<dyn Day>
     where
         Self: Sized,
     {
-        Box::new(Self(input))
+        Box::new(Self(input.into()))
     }
 
     fn part1(&self) -> String {
@@ -44,32 +44,32 @@ mod tests {
 
     #[test]
     fn test_zero() {
-        assert_eq!(Day1::init("(())".into()).part1(), "0");
-        assert_eq!(Day1::init("()()".into()).part1(), "0");
+        assert_eq!(Day1::init("(())").part1(), "0");
+        assert_eq!(Day1::init("()()").part1(), "0");
     }
 
     #[test]
     fn test_three() {
-        assert_eq!(Day1::init("(((".into()).part1(), "3");
-        assert_eq!(Day1::init("(()(()(".into()).part1(), "3");
-        assert_eq!(Day1::init("))(((((".into()).part1(), "3");
+        assert_eq!(Day1::init("(((").part1(), "3");
+        assert_eq!(Day1::init("(()(()(").part1(), "3");
+        assert_eq!(Day1::init("))(((((").part1(), "3");
     }
 
     #[test]
     fn test_negative_one() {
-        assert_eq!(Day1::init("())".into()).part1(), "-1");
-        assert_eq!(Day1::init("))(".into()).part1(), "-1");
+        assert_eq!(Day1::init("())").part1(), "-1");
+        assert_eq!(Day1::init("))(").part1(), "-1");
     }
 
     #[test]
     fn test_negative_three() {
-        assert_eq!(Day1::init(")))".into()).part1(), "-3");
-        assert_eq!(Day1::init(")())())".into()).part1(), "-3");
+        assert_eq!(Day1::init(")))").part1(), "-3");
+        assert_eq!(Day1::init(")())())").part1(), "-3");
     }
 
     #[test]
     fn test_part_two() {
-        assert_eq!(Day1::init(")".into()).part2(), "1");
-        assert_eq!(Day1::init("()())".into()).part2(), "5");
+        assert_eq!(Day1::init(")").part2(), "1");
+        assert_eq!(Day1::init("()())").part2(), "5");
     }
 }

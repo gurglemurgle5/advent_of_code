@@ -5,11 +5,11 @@ use aoc_utils::Day;
 pub struct Day3(String);
 
 impl Day for Day3 {
-    fn init(input: String) -> Box<dyn Day>
+    fn init(input: &str) -> Box<dyn Day>
     where
         Self: Sized,
     {
-        Box::new(Self(input))
+        Box::new(Self(input.into()))
     }
 
     fn part1(&self) -> String {
@@ -76,15 +76,15 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(Day3::init(">".into()).part1(), "2");
-        assert_eq!(Day3::init("^>v<".into()).part1(), "4");
-        assert_eq!(Day3::init("^v^v^v^v^v".into()).part1(), "2");
+        assert_eq!(Day3::init(">").part1(), "2");
+        assert_eq!(Day3::init("^>v<").part1(), "4");
+        assert_eq!(Day3::init("^v^v^v^v^v").part1(), "2");
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(Day3::init("^v".into()).part2(), "3");
-        assert_eq!(Day3::init("^>v<".into()).part2(), "3");
-        assert_eq!(Day3::init("^v^v^v^v^v".into()).part2(), "11");
+        assert_eq!(Day3::init("^v").part2(), "3");
+        assert_eq!(Day3::init("^>v<").part2(), "3");
+        assert_eq!(Day3::init("^v^v^v^v^v").part2(), "11");
     }
 }

@@ -5,11 +5,11 @@ use aoc_utils::Day;
 pub struct Day2(String);
 
 impl Day for Day2 {
-    fn init(input: String) -> Box<dyn Day>
+    fn init(input: &str) -> Box<dyn Day>
     where
         Self: Sized,
     {
-        Box::new(Self(input))
+        Box::new(Self(input.into()))
     }
 
     fn part1(&self) -> String {
@@ -77,13 +77,13 @@ mod tests {
 
     #[test]
     fn test_2x3x4() {
-        assert_eq!(Day2::init("2x3x4".into()).part1(), "58");
-        assert_eq!(Day2::init("2x3x4".into()).part2(), "34");
+        assert_eq!(Day2::init("2x3x4").part1(), "58");
+        assert_eq!(Day2::init("2x3x4").part2(), "34");
     }
 
     #[test]
     fn test_1x1x10() {
-        assert_eq!(Day2::init("1x1x10".into()).part1(), "43");
-        assert_eq!(Day2::init("1x1x10".into()).part2(), "14");
+        assert_eq!(Day2::init("1x1x10").part1(), "43");
+        assert_eq!(Day2::init("1x1x10").part2(), "14");
     }
 }

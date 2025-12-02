@@ -41,7 +41,7 @@ where
 {
     /// Init the struct using the provided input. Benchmark timing starts when this is called. This
     /// is a good place to do calculations that are used for both parts
-    fn init(input: String) -> Box<dyn Day>
+    fn init(input: &str) -> Box<dyn Day>
     where
         Self: Sized;
 
@@ -65,17 +65,19 @@ where
 }
 
 pub struct DayHandle {
-    day_fn: Box<dyn Fn(String) -> Box<dyn Day>>,
+    day_fn: Box<DayFn>,
 }
 
+type DayFn = dyn Fn(&str) -> Box<dyn Day>;
+
 impl DayHandle {
-    fn new<T: Fn(String) -> Box<dyn Day> + 'static>(fun: T) -> DayHandle {
+    fn new<T: Fn(&str) -> Box<dyn Day> + 'static>(fun: T) -> DayHandle {
         DayHandle {
             day_fn: Box::new(fun),
         }
     }
 
-    pub fn init_day(&self, input: String) -> Box<dyn Day> {
+    pub fn init_day(&self, input: &str) -> Box<dyn Day> {
         (self.day_fn)(input)
     }
 }

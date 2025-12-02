@@ -1,4 +1,8 @@
-use std::{env, fs, path::PathBuf};
+use std::{
+    env, fs,
+    path::{Path, PathBuf},
+    str::FromStr,
+};
 
 use proc_macro2::{Ident, TokenStream};
 use quote::{ToTokens, format_ident, quote};
@@ -55,24 +59,54 @@ impl Day {
 
 impl ToTokens for Day {
     fn to_tokens(&self, tokens: &mut TokenStream) {
+        let mut out_dir: PathBuf = out_path();
+        out_dir.push(format!("year{}", self.year));
         let day_mod_ident = self.mod_ident();
         let mut path = source_path();
         path.push(format!("year{}", self.year));
         path.push(format!("day{}.rs", self.day));
+        let path = relative_path(&path, &out_dir);
         let path = path.to_str().unwrap();
 
         tokens.extend(quote! {
-            pub mod #day_mod_ident {
-                include! { #path }
-            }
+            #[path = #path]
+            pub mod #day_mod_ident;
         });
     }
+}
+
+/// Constructs a path such that `path` is relative to `other`
+fn relative_path(path: &Path, other: &Path) -> PathBuf {
+    if path == other {
+        return PathBuf::from_str(".").unwrap();
+    }
+    let prefix: PathBuf = path
+        .iter()
+        .zip(other.iter())
+        .take_while(|(path, other)| path == other)
+        .map(|(path, _other)| path)
+        .collect();
+    let path = path.strip_prefix(&prefix).unwrap();
+    let other = other.strip_prefix(&prefix).unwrap();
+
+    let mut final_path = PathBuf::new();
+    for _ in other {
+        final_path.push("..");
+    }
+    for part in path {
+        final_path.push(part);
+    }
+    final_path
 }
 
 fn source_path() -> PathBuf {
     let mut source_path: PathBuf = env::var_os("CARGO_MANIFEST_DIR").unwrap().into();
     source_path.push("src");
     source_path
+}
+
+fn out_path() -> PathBuf {
+    env::var_os("OUT_DIR").unwrap().into()
 }
 
 fn main() {
@@ -90,6 +124,10 @@ fn main() {
         {
             let mut year_path = source_path.clone();
             year_path.push(format!("year{year}"));
+
+            let mut year_out_path = out_path();
+            year_out_path.push(format!("year{year}"));
+            let _ = fs::create_dir(year_out_path); // might already exist
             let mut days = Vec::new();
 
             for file in fs::read_dir(&year_path).unwrap().filter_map(|file| {
@@ -109,7 +147,7 @@ fn main() {
         }
     }
 
-    let mut out_path: PathBuf = env::var_os("OUT_DIR").unwrap().into();
+    let mut out_path = out_path();
     out_path.push("generated.rs");
     fs::write(out_path, quote! {#( #years )*}.to_string()).unwrap();
 }
