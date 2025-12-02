@@ -2,6 +2,20 @@ use std::ops::RangeInclusive;
 
 use aoc_utils::Day;
 
+const FACTORS: &[&[u64]] = &[
+    &[],        // 0
+    &[],        // 1
+    &[1],       // 2
+    &[1],       // 3
+    &[1, 2],    // 4
+    &[1],       // 5
+    &[1, 2, 3], // 6
+    &[1],       // 7
+    &[1, 2, 4], // 8
+    &[1, 3],    // 9
+    &[1, 2, 5], // 10
+];
+
 pub struct Day2(Box<[RangeInclusive<u64>]>);
 
 impl Day for Day2 {
@@ -28,10 +42,10 @@ impl Day for Day2 {
         for range in &self.0 {
             for num in range.clone() {
                 let len = num.ilog10() + 1;
-                let multiple = len / 2;
+                let multiple = 10u64.pow(len / 2);
                 if len.is_multiple_of(2) {
-                    let test = num % 10u64.pow(multiple);
-                    let other = (num / 10u64.pow(multiple)) % 10u64.pow(multiple);
+                    let test = num % multiple;
+                    let other = (num / multiple) % multiple;
 
                     if other != test {
                         continue;
@@ -48,22 +62,21 @@ impl Day for Day2 {
         let mut invalid = 0;
         for range in &self.0 {
             for num in range.clone() {
-                let len = num.ilog10() + 1;
+                let len: u64 = num.ilog10() as u64 + 1;
 
-                'multiples: for multiple in 1..=(len / 2) {
-                    if len.is_multiple_of(multiple) {
-                        let test = num % 10u64.pow(multiple);
+                'multiples: for &multiple in FACTORS[len as usize] {
+                    let chunk = 10u64.pow(multiple as u32);
+                    let test = num % chunk;
 
-                        for i in 1..(len / multiple) {
-                            let other = (num / 10u64.pow(multiple * i)) % (10u64).pow(multiple);
-                            if other != test {
-                                continue 'multiples;
-                            }
+                    for i in 1..(len / multiple) {
+                        let other = (num / chunk.pow(i as u32)) % chunk;
+                        if other != test {
+                            continue 'multiples;
                         }
-
-                        invalid += num;
-                        break;
                     }
+
+                    invalid += num;
+                    break;
                 }
             }
         }
