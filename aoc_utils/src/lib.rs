@@ -2,6 +2,11 @@ pub mod grid;
 mod input_manager;
 pub mod intcode;
 
+use std::{
+    cmp::Ordering,
+    ops::{Bound, RangeBounds, RangeInclusive},
+};
+
 pub use input_manager::InputManager;
 
 #[must_use]
@@ -30,6 +35,23 @@ pub fn lcm_i64(a: i64, b: i64) -> i64 {
     }
     let gcd = gcd_i64(a, b);
     a.abs() * (b.abs() / gcd)
+}
+
+pub fn range_reduce<T: Clone + Copy + Ord>(ranges: &[RangeInclusive<T>]) -> Vec<RangeInclusive<T>> {
+    let mut ranges = ranges.to_vec();
+    ranges.sort_by_key(|range| *range.start());
+
+    for left in 0..(ranges.len() - 1) {
+        for right in (left + 1)..(ranges.len()) {
+            while right < ranges.len() && ranges[left].contains(ranges[right].start()) {
+                ranges[left] =
+                    *ranges[left].start()..=*(ranges[left].end().max(ranges[right].end()));
+                ranges.remove(right);
+            }
+        }
+    }
+
+    ranges
 }
 
 pub trait Year {
