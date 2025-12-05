@@ -2,10 +2,7 @@ pub mod grid;
 mod input_manager;
 pub mod intcode;
 
-use std::{
-    cmp::Ordering,
-    ops::{Bound, RangeBounds, RangeInclusive},
-};
+use std::ops::RangeInclusive;
 
 pub use input_manager::InputManager;
 
