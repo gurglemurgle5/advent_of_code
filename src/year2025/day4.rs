@@ -53,7 +53,7 @@ impl Day for Day4 {
 
         let mut total = 0;
 
-        let mut old = grid.clone();
+        let mut did_something_happen = false;
 
         loop {
             for y in 0..grid.len() {
@@ -83,13 +83,14 @@ impl Day for Day4 {
                     if nearby < 5 {
                         total += 1;
                         grid[y][x] = '.';
+                        did_something_happen = true
                     }
                 }
             }
-            if grid == old {
+            if !did_something_happen {
                 break;
             } else {
-                old = grid.clone();
+                did_something_happen = false
             }
         }
 

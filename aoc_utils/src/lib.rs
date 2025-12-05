@@ -1,3 +1,4 @@
+pub mod grid;
 mod input_manager;
 pub mod intcode;
 
