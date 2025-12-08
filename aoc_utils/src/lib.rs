@@ -1,10 +1,9 @@
 pub mod grid;
-mod input_manager;
+pub mod input_manager;
 pub mod intcode;
+pub mod predude;
 
 use std::ops::RangeInclusive;
-
-pub use input_manager::InputManager;
 
 #[must_use]
 pub fn gcd(a: i32, b: i32) -> i32 {

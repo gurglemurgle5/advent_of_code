@@ -1,7 +1,7 @@
 use std::{hint::black_box, process::exit, time::Instant};
 
 use advent_of_code::get_day;
-use aoc_utils::InputManager;
+use aoc_utils::input_manager::InputManager;
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
