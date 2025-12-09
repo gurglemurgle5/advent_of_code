@@ -110,8 +110,8 @@ impl Day for Day9 {
                 sizes.push((size, (left, right)));
             }
         }
-        sizes.sort();
-        sizes.last().unwrap().0.to_string()
+
+        sizes.iter().max().unwrap().0.to_string()
     }
 }
 
