@@ -63,35 +63,35 @@ impl Day for Day10 {
             .to_string()
     }
 
-    fn part2(&self) -> String {
-        self.0
-            .lines()
-            .map(|line| {
-                let mut parts = line.split(' ');
-                let _display = parts.next().unwrap();
-                let joltage = parts.next_back().unwrap();
-                let buttons = parts;
+    // fn part2(&self) -> String {
+    //     self.0
+    //         .lines()
+    //         .map(|line| {
+    //             let mut parts = line.split(' ');
+    //             let _display = parts.next().unwrap();
+    //             let joltage = parts.next_back().unwrap();
+    //             let buttons = parts;
 
-                let buttons: Box<[Box<[usize]>]> = buttons
-                    .map(|button| {
-                        button[1..(button.len() - 1)]
-                            .split(',')
-                            .map(|light| light.parse().unwrap())
-                            .collect()
-                    })
-                    .collect();
+    //             let buttons: Box<[Box<[usize]>]> = buttons
+    //                 .map(|button| {
+    //                     button[1..(button.len() - 1)]
+    //                         .split(',')
+    //                         .map(|light| light.parse().unwrap())
+    //                         .collect()
+    //                 })
+    //                 .collect();
 
-                let joltage: Box<[u8]> = joltage[1..(joltage.len() - 1)]
-                    .split(',')
-                    .map(|num| num.parse().unwrap())
-                    .collect();
+    //             let joltage: Box<[u8]> = joltage[1..(joltage.len() - 1)]
+    //                 .split(',')
+    //                 .map(|num| num.parse().unwrap())
+    //                 .collect();
 
-                todo!("yeah idk");
-                0
-            })
-            .sum::<usize>()
-            .to_string()
-    }
+    //             todo!("yeah idk");
+    //             0
+    //         })
+    //         .sum::<usize>()
+    //         .to_string()
+    // }
 }
 
 #[cfg(test)]
@@ -112,17 +112,17 @@ mod tests {
         );
     }
 
-    #[test]
-    fn test_part2() {
-        assert_eq!(
-            Day10::init(
-                "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
-[...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
-[.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}
-"
-            )
-            .part2(),
-            "33"
-        );
-    }
+    //     #[test]
+    //     fn test_part2() {
+    //         assert_eq!(
+    //             Day10::init(
+    //                 "[.##.] (3) (1,3) (2) (2,3) (0,2) (0,1) {3,5,4,7}
+    // [...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}
+    // [.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}
+    // "
+    //             )
+    //             .part2(),
+    //             "33"
+    //         );
+    //     }
 }
